@@ -1,0 +1,10 @@
+{
+    "scopeName": "source.6502",
+    "patterns": [
+      { "match": "\\b(LDA|STA|JMP|JSR|RTS|ADC|SBC|LDX|LDY|TAX|INX|BRK)\\b", "name": "keyword.mnemonic.6502" },
+      { "match": "#\\$[0-9A-Fa-f]{2}", "name": "constant.numeric.6502" },
+      { "match": "\\$[0-9A-Fa-f]{4}", "name": "constant.numeric.hex.6502" },
+      { "match": ";.*$", "name": "comment.line.semicolon.6502" }
+    ]
+  }
+  

@@ -13,29 +13,49 @@
   "main": "./out/extension.js",
   "contributes": {
     "viewsContainers": {
-    "activitybar": [
-      {
-        "id": "vsc6502cpu",
-        "name": "6502 CPU",
-        "title": "6502 CPU",
-        "icon": "media/cpu.svg",
-        "contextualTitle": "6502 CPU"
-      }
-    ]
-  },
-  "views": {
-    "vsc6502cpu": [
-      {
-        "id": "vsc6502cpuView",
-        "name": "6502 CPU",
-        "icon": "media/cpu.svg"
-      }
-    ]
-  },
+      "activitybar": [
+        {
+          "id": "vsc6502cpu",
+          "name": "6502 CPU",
+          "title": "6502 CPU",
+          "icon": "media/cpu.svg",
+          "contextualTitle": "6502 CPU"
+        }
+      ]
+    },
+    "views": {
+      "vsc6502cpu": [
+        {
+          "id": "vsc6502cpuView",
+          "name": "6502 CPU",
+          "icon": "media/cpu.svg"
+        }
+      ]
+    },
     "commands": [
       {
-        "command": "vsc6502cpu.6502",
-        "title": "Hello 6502 CPU"
+        "command": "extension.assemble6502",
+        "title": "6502: Assemble Current File"
+      }
+    ],
+    "languages": [
+      {
+        "id": "6502asm",
+        "aliases": [
+          "6502 Assembly",
+          "asm"
+        ],
+        "extensions": [
+          ".asm"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "6502asm",
+        "scopeName": "source.6502",
+        "path": "./syntaxes/6502.tmLanguage.json"
       }
     ]
   },
