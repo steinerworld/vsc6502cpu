@@ -14,27 +14,51 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 	context.subscriptions.push(assembleCommand);
 
-	// Auto-Vervollständigung für 6502-Opcode
 	const completionProvider = vscode.languages.registerCompletionItemProvider(
-		'6502asm', // ID aus package.json -> "languages"
+		'6502', // Sprach-ID aus package.json
 		{
-			provideCompletionItems(document, position, token, context) {
+			provideCompletionItems(document, position) {
+				const line = document.lineAt(position); // Aktuelle Zeile
+				const currentText = line.text.substring(0, position.character); // Bis zum Cursor
+
+				// Vervollständigung der bekannten Befehle
 				const instructions = [
-					"LDA", "STA", "LDX", "LDY", "STX", "STY",
-					"ADC", "SBC", "AND", "ORA", "EOR",
-					"JMP", "JSR", "RTS", "RTI", "BRK",
-					"BNE", "BEQ", "BCC", "BCS", "BMI", "BPL", "BVC", "BVS",
-					"TAX", "TXA", "TAY", "TYA", "TXS", "TSX",
-					"INX", "DEX", "INY", "DEY", "NOP"
+					'LDA', 'LDX', 'LDY', 'STA', 'STX', 'STY', 'ADC', 'SBC',
+					'INX', 'INY', 'DEX', 'DEY', 'JMP', 'JSR', 'RTS', 'BRK',
+					'BNE', 'BEQ', 'BPL', 'BMI', 'BCC', 'BCS', 'BVC', 'BVS',
+					'CMP', 'CPX', 'CPY', 'INC', 'DEC', 'AND', 'ORA', 'EOR',
+					'TAX', 'TAY', 'TXA', 'TYA', 'TSX', 'TXS', 'PHA', 'PHP',
+					'PLA', 'PLP', 'CLC', 'SEC', 'CLI', 'SEI', 'CLV', 'CLD',
+					'SED', 'NOP', 'BIT', 'ROL', 'ROR', 'ASL', 'LSR'
 				];
-				return instructions.map(instr => {
+
+				// Vorschläge für Befehle
+				const commandSuggestions = instructions.map(instr => {
 					const item = new vscode.CompletionItem(instr, vscode.CompletionItemKind.Keyword);
-					item.insertText = instr + ' ';
+					item.insertText = instr;
 					return item;
 				});
+
+				// Labels erkennen: Alle Label-Deklarationen suchen
+				const labelSuggestions: vscode.CompletionItem[] = [];
+				const labelRegex = /^[ \t]*([A-Za-z_][\w]*):/;  // Regulärer Ausdruck für Labels
+
+				for (let i = 0; i < document.lineCount; i++) {
+					const lineText = document.lineAt(i).text;
+					const match = lineText.match(labelRegex);
+					if (match) {
+						const label = match[1]; // Erster Capturing-Gruppe (Labelname)
+						const labelItem = new vscode.CompletionItem(label, vscode.CompletionItemKind.Variable);
+						labelItem.insertText = label + ':'; // Label mit ':' einfügen
+						labelSuggestions.push(labelItem);
+					}
+				}
+
+				// Zusammenführen von Befehlen und Labels
+				return [...commandSuggestions, ...labelSuggestions];
 			}
 		},
-		'' // Triggerzeichen, z. B. leer = bei jedem Buchstaben
+		':' // Trigger nach ":" (also bei Labelverwendung)
 	);
 	context.subscriptions.push(completionProvider);
 }

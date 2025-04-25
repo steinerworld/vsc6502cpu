@@ -1,10 +1,22 @@
 {
-    "scopeName": "source.6502",
-    "patterns": [
-      { "match": "\\b(LDA|STA|JMP|JSR|RTS|ADC|SBC|LDX|LDY|TAX|INX|BRK)\\b", "name": "keyword.mnemonic.6502" },
-      { "match": "#\\$[0-9A-Fa-f]{2}", "name": "constant.numeric.6502" },
-      { "match": "\\$[0-9A-Fa-f]{4}", "name": "constant.numeric.hex.6502" },
-      { "match": ";.*$", "name": "comment.line.semicolon.6502" }
-    ]
-  }
-  
+  "name": "6502 Assembly",
+  "scopeName": "source.6502",
+  "patterns": [
+    {
+      "name": "keyword.mnemonic.6502",
+      "match": "\\b(ADC|AND|ASL|BCC|BCS|BEQ|BIT|BMI|BNE|BPL|BRK|BVC|BVS|CLC|CLD|CLI|CLV|CMP|CPX|CPY|DEC|DEX|DEY|EOR|INC|INX|INY|JMP|JSR|LDA|LDX|LDY|LSR|NOP|ORA|PHA|PHP|PLA|PLP|ROL|ROR|RTI|RTS|SBC|SEC|SED|SEI|STA|STX|STY|TAX|TAY|TSX|TXA|TXS|TYA)\\b"
+    },
+    {
+      "name": "entity.name.label.6502",
+      "match": "^[ \\t]*([A-Za-z_][\\w]*):"
+    },
+    {
+      "name": "comment.line.semicolon.6502",
+      "match": ";.*$"
+    },
+    {
+      "name": "constant.numeric.hex.6502",
+      "match": "#?\\$[0-9A-Fa-f]+"
+    }
+  ]
+}
