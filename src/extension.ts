@@ -3,13 +3,29 @@ import { assemble6502 } from './assembler';
 
 export function activate(context: vscode.ExtensionContext) {
 	// Befehl "6502: Assemble Current File"
-	const assembleCommand = vscode.commands.registerCommand('extension.assemble6502', () => {
+	const assembleCommand = vscode.commands.registerCommand('extension.assemble6502', async () => {
 		const editor = vscode.window.activeTextEditor;
 		if (editor) {
 			const source = editor.document.getText();
 			const bin = assemble6502(source);
-			vscode.window.showInformationMessage(`Assembled ${bin.length} bytes`);
-			// Optional: speichern oder hex-dump anzeigen
+
+			// Erstelle eine temporäre Datei im Arbeitsbereich
+			const folderUri = vscode.workspace.workspaceFolders?.[0].uri;
+			if (!folderUri) {
+				vscode.window.showErrorMessage("Kein Arbeitsbereich geöffnet.");
+				return;
+			}
+
+			const fileUri = vscode.Uri.joinPath(folderUri, 'assembled_output.bin');
+
+			// Schreibe den Bytecode in die Datei
+			try {
+				await vscode.workspace.fs.writeFile(fileUri, Buffer.from(bin));
+				vscode.window.showInformationMessage(`Assembled ${bin.length} bytes und gespeichert unter: ${fileUri.fsPath}`);
+			} catch (error) {
+				console.error(`Fehler beim Speichern der Datei: ${error}`);
+				//vscode.window.showErrorMessage(`Fehler beim Speichern der Datei: ${error.message}`);
+			}
 		}
 	});
 	context.subscriptions.push(assembleCommand);
